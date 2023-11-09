@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -96,8 +97,12 @@ fun SendEthScreen(
                 style = MaterialTheme.typography.headlineLarge
             )
             when (val state = state) {
-                is SendEthState.Error -> Text(text = state.errorMsg)
-                SendEthState.IsLoading -> CircularProgressIndicator()
+                is SendEthState.Error -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(text = state.errorMsg)
+                }
+                SendEthState.IsLoading -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator()
+                }
                 is SendEthState.UiModel -> SendEthContent(
                     state = state,
                     currency = currency,
@@ -257,7 +262,9 @@ fun SendEthContent(
     Spacer(modifier = Modifier.height(96.dp))
     if(state.exceededBalance) {
         Text(
-            modifier = Modifier.padding(start = 8.dp).fillMaxWidth(),
+            modifier = Modifier
+                .padding(start = 8.dp)
+                .fillMaxWidth(),
             text = stringResource(
                 id = R.string.error_balance_exceeded
             ),
