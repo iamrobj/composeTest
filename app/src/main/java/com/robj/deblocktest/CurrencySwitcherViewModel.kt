@@ -42,7 +42,7 @@ class CurrencySwitcherViewModel @Inject constructor(
                                     conversion = entry.value,
                                     conversionFormatted = ((initialValue.takeIf { it > 0.0 }
                                         ?: entry.value) / entry.value).formatToDecimalPlaces(
-                                        decimalPlaces = 2
+                                        decimalPlaces = 6
                                     ),
                                     currencyFormatted = "${currency.currencySymbol}${
                                         (initialValue.takeIf { it > 0.0 }
