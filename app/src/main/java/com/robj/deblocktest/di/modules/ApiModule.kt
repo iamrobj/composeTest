@@ -1,7 +1,7 @@
 package com.robj.deblocktest.di.modules
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import com.robj.deblocktest.ApiClient
+import com.robj.deblocktest.networking.ApiClient
 import com.robj.deblocktest.BuildConfig
 import com.robj.deblocktest.networking.EthereumApiService
 import dagger.Module
@@ -70,7 +70,7 @@ class ApiModule @Inject constructor() {
 
     @Provides
     @Singleton
-    fun provideSisaaApiClient(
+    fun provideApiClient(
         ethereumApiService: EthereumApiService
     ) = ApiClient(
         ethereumApiService = ethereumApiService,

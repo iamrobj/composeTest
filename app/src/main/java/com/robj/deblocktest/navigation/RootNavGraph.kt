@@ -6,8 +6,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.robj.deblocktest.CurrencySwitcherScreen
-import com.robj.deblocktest.SendEthScreen
+import com.robj.deblocktest.ui.screens.sendEthScreen.SendEthScreen
 
 @Composable
 fun RootNavGraph(

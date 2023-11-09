@@ -1,4 +1,4 @@
-package com.robj.deblocktest
+package com.robj.deblocktest.ui.screens.sendEthScreen
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -58,6 +58,10 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import com.robj.deblocktest.ui.screens.currencySwitcherScreen.CurrencySwitcherScreen
+import com.robj.deblocktest.R
+import com.robj.deblocktest.ui.screens.currencySwitcherScreen.SupportedCurrency
+import com.robj.deblocktest.utils.formatToDecimalPlaces
 import kotlinx.coroutines.launch
 import java.util.Locale
 

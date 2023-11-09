@@ -1,6 +1,5 @@
-package com.robj.deblocktest
+package com.robj.deblocktest.networking
 
-import com.robj.deblocktest.networking.EthereumApiService
 import com.robj.deblocktest.networking.models.GetGasFeeResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

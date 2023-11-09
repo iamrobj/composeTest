@@ -1,10 +1,13 @@
-package com.robj.deblocktest
+package com.robj.deblocktest.ui.screens.sendEthScreen
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.robj.deblocktest.ui.screens.currencySwitcherScreen.SupportedCurrency
+import com.robj.deblocktest.networking.ApiClient
+import com.robj.deblocktest.utils.formatToDecimalPlaces
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

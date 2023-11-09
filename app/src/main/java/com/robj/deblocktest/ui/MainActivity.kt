@@ -1,4 +1,4 @@
-package com.robj.deblocktest
+package com.robj.deblocktest.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

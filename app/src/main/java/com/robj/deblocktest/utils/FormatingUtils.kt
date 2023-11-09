@@ -1,4 +1,4 @@
-package com.robj.deblocktest
+package com.robj.deblocktest.utils
 
 fun Double.formatToDecimalPlaces(decimalPlaces: Int = 2): String {
     val num = this.toString().toDouble()

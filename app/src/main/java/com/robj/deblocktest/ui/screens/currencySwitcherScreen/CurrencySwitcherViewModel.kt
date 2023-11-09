@@ -1,9 +1,12 @@
-package com.robj.deblocktest
+package com.robj.deblocktest.ui.screens.currencySwitcherScreen
 
 import androidx.annotation.DrawableRes
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.robj.deblocktest.R
+import com.robj.deblocktest.networking.ApiClient
+import com.robj.deblocktest.utils.formatToDecimalPlaces
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
