@@ -68,7 +68,7 @@ class SendEthViewModel @Inject constructor(
 
     private fun buildUiModel(value: Double, isFiat: Boolean): SendEthState.UiModel {
         val ethValue = if (isFiat) {
-            calcEthForFiat(value)
+            convertFiatToEth(value)
         } else {
             value
         }
@@ -77,9 +77,28 @@ class SendEthViewModel @Inject constructor(
             fiatValue = if (isFiat) {
                 value
             } else {
-                calcFiatForEth(value)
-            }, //TOOD: Format nicer
-            ethValue = ethValue,
+                convertEthToFiat(value)
+            },
+            userInputCurrencySymbol = if (isFiat) {
+                _currency.currencySymbol
+            } else {
+                "ETH"
+            },
+            userInputValue = value.takeIf { it > 0.0 }?.formatToDecimalPlaces() ?: "",
+            conversionValue = if (isFiat) {
+                "${convertFiatToEth(value).formatToDecimalPlaces(decimalPlaces = 6)} ETH"
+            } else {
+                "${_currency.currencySymbol}${
+                    convertEthToFiat(value).formatToDecimalPlaces(
+                        decimalPlaces = 0
+                    )
+                }"
+            },
+            ethValue = if (!isFiat) {
+                value
+            } else {
+                convertFiatToEth(value)
+            },
             isReadyToSend = value > 0.0 && ethValue < balanceAvailable,
             exceededBalance = ethValue > balanceAvailable
         )
@@ -93,9 +112,9 @@ class SendEthViewModel @Inject constructor(
 
     private fun estimateNetworkFee(gasPrice: Double) = (21000 * gasPrice) / 100000000
 
-    private fun calcFiatForEth(eth: Double) = eth * price
+    private fun convertEthToFiat(eth: Double) = eth * price
 
-    private fun calcEthForFiat(fiat: Double) = fiat / price
+    private fun convertFiatToEth(fiat: Double) = fiat / price
 
     fun fetchGasFees() {
         gasFeeJob = viewModelScope.launch(Dispatchers.IO) {
@@ -117,6 +136,16 @@ class SendEthViewModel @Inject constructor(
         gasFeeJob?.cancel()
     }
 
+    fun flipCurrencies(uiModel: SendEthState.UiModel, isFiat: Boolean) {
+        _stateFlow.value = buildUiModel(
+            value = if (isFiat) {
+                uiModel.fiatValue
+            } else {
+                uiModel.ethValue
+            }, isFiat = isFiat
+        )
+    }
+
 }
 
 sealed class SendEthState {
@@ -126,6 +155,9 @@ sealed class SendEthState {
         val currency: SupportedCurrency,
         val fiatValue: Double,
         val ethValue: Double,
+        val userInputValue: String,
+        val conversionValue: String,
+        val userInputCurrencySymbol: String,
         val exceededBalance: Boolean,
         val isReadyToSend: Boolean
     ) : SendEthState()

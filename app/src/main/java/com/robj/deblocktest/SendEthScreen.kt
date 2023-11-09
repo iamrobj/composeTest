@@ -97,24 +97,28 @@ fun SendEthScreen(
                 style = MaterialTheme.typography.headlineLarge
             )
             when (val state = state) {
-                is SendEthState.Error -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                is SendEthState.Error -> Box(
+                    Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
                     Text(text = state.errorMsg)
                 }
-                SendEthState.IsLoading -> Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+
+                SendEthState.IsLoading -> Box(
+                    Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
                     CircularProgressIndicator()
                 }
+
                 is SendEthState.UiModel -> SendEthContent(
                     state = state,
                     currency = currency,
                     gasFee = gasFee,
-                    onCurrencyChange = { currency, price, userValue, isFiat ->
-                        viewModel.changeCurrency(
-                            currency = currency, price = price, value = userValue, isFiat = isFiat
-                        )
-                    },
-                    onValueChange = { newValue, isFiat ->
-                        viewModel.onValueChange(newValue, isFiat)
-                    })
+                    onCurrencyChange = viewModel::changeCurrency,
+                    onValueChange = viewModel::onValueChange,
+                    onCurrencyFlip = viewModel::flipCurrencies
+                )
             }
 
         }
@@ -129,6 +133,7 @@ fun SendEthContent(
     currency: SupportedCurrency,
     onCurrencyChange: (currency: SupportedCurrency, price: Double, userValue: Double, isFiat: Boolean) -> Unit,
     onValueChange: (newValue: Double, isFiat: Boolean) -> Unit,
+    onCurrencyFlip: (uiModel: SendEthState.UiModel, isFiat: Boolean) -> Unit,
     gasFee: Double?
 ) {
     var showCurrencySwitcher by rememberSaveable { mutableStateOf(false) }
@@ -179,19 +184,11 @@ fun SendEthContent(
                     ) {
                         Text(
                             modifier = Modifier.padding(end = 2.dp),
-                            text = if (isFiat) {
-                                currency.currencySymbol
-                            } else {
-                                "ETH"
-                            },
+                            text = state.userInputCurrencySymbol,
                             style = MaterialTheme.typography.titleLarge,
                         )
                         BasicTextField(
-                            value = if (isFiat) {
-                                state.fiatValue
-                            } else {
-                                state.ethValue
-                            }.takeIf { it > 0.0 }?.formatToDecimalPlaces() ?: "",
+                            value = state.userInputValue,
                             onValueChange = { newValue ->
                                 userValue = newValue.toDoubleOrNull() ?: userValue
                                 onValueChange(userValue, isFiat)
@@ -206,11 +203,7 @@ fun SendEthContent(
                 }
                 Text(
                     modifier = Modifier.padding(start = 32.dp),
-                    text = if (!isFiat) {
-                        currency.currencySymbol + state.fiatValue.formatToDecimalPlaces()
-                    } else {
-                        state.ethValue.formatToDecimalPlaces() + " ETH"
-                    },
+                    text = state.conversionValue,
                     style = MaterialTheme.typography.labelSmall
                 )
             }
@@ -219,7 +212,10 @@ fun SendEthContent(
         Image(
             modifier = Modifier
                 .size(50.dp)
-                .clickable { isFiat = !isFiat }
+                .clickable {
+                    isFiat = !isFiat
+                    onCurrencyFlip(state, isFiat)
+                }
                 .background(color = MaterialTheme.colorScheme.background)
                 .clip(CircleShape)
                 .border(border = BorderStroke(1.dp, Color(0xFFE3E3E3)), shape = CircleShape)
@@ -260,7 +256,7 @@ fun SendEthContent(
         )
     }
     Spacer(modifier = Modifier.height(96.dp))
-    if(state.exceededBalance) {
+    if (state.exceededBalance) {
         Text(
             modifier = Modifier
                 .padding(start = 8.dp)

@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
@@ -25,7 +24,7 @@ class CurrencySwitcherViewModel @Inject constructor(
 
     private val cryptoCurrency = savedStateHandle.get<String>(extraCurrency) ?: "ethereum"
 
-    fun fetchPrices() {
+    fun fetchPrices(initialValue: Double) {
         viewModelScope.launch {
             apiClient.getPrices(cryptoCurrency = cryptoCurrency,
                 currencies = SupportedCurrency.values().map { it.currencyCode })
@@ -37,8 +36,20 @@ class CurrencySwitcherViewModel @Inject constructor(
                         SupportedCurrency.values()
                             .find { it.currencyCode.equals(entry.key, ignoreCase = true) }
                             ?.let { currency ->
+                                //TODO: Move to  mapper function for easier testing
                                 Price(
-                                    currency = currency, conversion = entry.value
+                                    currency = currency,
+                                    conversion = entry.value,
+                                    conversionFormatted = ((initialValue.takeIf { it > 0.0 }
+                                        ?: entry.value) / entry.value).formatToDecimalPlaces(
+                                        decimalPlaces = 2
+                                    ),
+                                    currencyFormatted = "${currency.currencySymbol}${
+                                        (initialValue.takeIf { it > 0.0 }
+                                            ?: entry.value).formatToDecimalPlaces(
+                                            decimalPlaces = 0
+                                        )
+                                    }"
                                 )
                             }
                     }
@@ -56,7 +67,10 @@ sealed class CurrencySwitcherState {
 }
 
 data class Price(
-    val currency: SupportedCurrency, val conversion: Double
+    val currency: SupportedCurrency,
+    val conversion: Double,
+    val conversionFormatted: String,
+    val currencyFormatted: String
 )
 
 enum class SupportedCurrency(

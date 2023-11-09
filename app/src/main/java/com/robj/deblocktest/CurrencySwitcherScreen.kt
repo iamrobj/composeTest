@@ -56,7 +56,7 @@ fun CurrencySwitcherScreen(
     DisposableEffect(key1 = lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
-                viewModel.fetchPrices()
+                viewModel.fetchPrices(initialValue)
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -181,9 +181,7 @@ private fun CurrencyRow(
                         style = MaterialTheme.typography.bodyMedium
                     )
                     Text(
-                        text = (initialValue / price.conversion).formatToDecimalPlaces(
-                            decimalPlaces = 2
-                        ), style = MaterialTheme.typography.bodyMedium
+                        text = price.conversionFormatted, style = MaterialTheme.typography.bodyMedium
                     )
                 }
                 Row {
@@ -193,11 +191,7 @@ private fun CurrencyRow(
                         style = MaterialTheme.typography.labelSmall
                     )
                     Text(
-                        text = "${price.currency.currencySymbol}${
-                            initialValue.formatToDecimalPlaces(
-                                decimalPlaces = 0
-                            )
-                        }",
+                        text = price.currencyFormatted,
                         style = MaterialTheme.typography.labelSmall
                     )
                 }
