@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -28,8 +27,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
-import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
@@ -257,16 +254,26 @@ fun SendEthContent(
             style = MaterialTheme.typography.labelSmall.copy(color = Color.Black)
         )
     }
-    FloatingActionButton(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 96.dp)
-            .padding(24.dp),
+    Spacer(modifier = Modifier.height(96.dp))
+    if(state.exceededBalance) {
+        Text(
+            modifier = Modifier.padding(start = 8.dp).fillMaxWidth(),
+            text = stringResource(
+                id = R.string.error_balance_exceeded
+            ),
+            textAlign = TextAlign.Center,
+            style = MaterialTheme.typography.labelSmall.copy(color = Color.Red)
+        )
+    }
+    Button(modifier = Modifier
+        .fillMaxWidth()
+        .padding(24.dp),
+        enabled = state.isReadyToSend,
         shape = RoundedCornerShape(4.dp),
-        containerColor = Color.Black,
-        contentColor = Color.White,
-        onClick = { }
-    ) {
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Black
+        ),
+        onClick = { }) {
         Text(
             modifier = Modifier.padding(8.dp),
             text = stringResource(
@@ -277,7 +284,6 @@ fun SendEthContent(
             ),
             style = MaterialTheme.typography.bodyMedium
         )
-
     }
 }
 

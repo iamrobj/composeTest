@@ -38,6 +38,7 @@ class SendEthViewModel @Inject constructor(
     private var price: Double = 0.0
     private val cryptoCurrency: String = "ethereum"
     var gasFee: MutableState<Double?> = mutableStateOf(null)
+    private val balanceAvailable: Double = 3450.0 //TODO: Hardcoded for test
 
     init {
         viewModelScope.launch {
@@ -66,6 +67,11 @@ class SendEthViewModel @Inject constructor(
     }
 
     private fun buildUiModel(value: Double, isFiat: Boolean): SendEthState.UiModel {
+        val ethValue = if (isFiat) {
+            calcEthForFiat(value)
+        } else {
+            value
+        }
         return SendEthState.UiModel(
             currency = _currency,
             fiatValue = if (isFiat) {
@@ -73,11 +79,9 @@ class SendEthViewModel @Inject constructor(
             } else {
                 calcFiatForEth(value)
             }, //TOOD: Format nicer
-            ethValue = if (isFiat) {
-                calcEthForFiat(value)
-            } else {
-                value
-            },
+            ethValue = ethValue,
+            isReadyToSend = value > 0.0 && ethValue < balanceAvailable,
+            exceededBalance = ethValue > balanceAvailable
         )
     }
 
@@ -122,5 +126,7 @@ sealed class SendEthState {
         val currency: SupportedCurrency,
         val fiatValue: Double,
         val ethValue: Double,
+        val exceededBalance: Boolean,
+        val isReadyToSend: Boolean
     ) : SendEthState()
 }
