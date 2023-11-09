@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">DeblockTest</string>
+    <string name="displayed_currency">Dispayed Currency</string>
+    <string name="displayed_currency_info">The currency is for information only. You\'re still sending ETH.</string>
+    <string name="send_eth_title">Send Ethereum</string>
+    <string name="max_eth_desc">Max 3 450 ETH</string>
+    <string name="amount">Amount</string>
+    <string name="est_network_fees">Est. Network fees: ~ %1$s</string>
+    <string name="send_eth_btn">Send %1$s of ETH</string>
+</resources>
